@@ -28,12 +28,11 @@
       "selective_sync" : {{ sf.selective_sync|lower if sf.selective_sync is defined and sf.selective_sync else 'false' }},
       "known_hosts" :
       [
-{%       set x = 0 %}
+{%       set x = 1 %}
 {%       for known_host in sf.known_hosts %}
-{%         set l = loop.length - 1 %}
 {%         if known_host.name != inventory_hostname %}
 {%            set x = x + 1 %}
-        "{{ known_host.name }}:{{ known_host.port }}"{% if x != l %},{% endif %}
+        "{{ known_host.name }}:{{ known_host.port }}"{% if x < loop.length %},{% endif %}
 
 {%         endif %}
 {%       endfor %}
