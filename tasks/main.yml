@@ -37,6 +37,7 @@
         owner: root
         group: root
         mode: 0644
+      notify: restart resilio-sync 
 
     - name: Creating hidden sync directories (if applicable)
       file:
