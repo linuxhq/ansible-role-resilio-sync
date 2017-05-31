@@ -1,0 +1,57 @@
+---
+- name: Creating resilio-sync repository
+  tags: rslsync
+  yum_repository:
+    baseurl: "http://linux-packages.resilio.com/resilio-sync/rpm/$basearch"
+    description: "Resilio Sync $basearch"
+    enabled: yes
+    gpgcheck: yes
+    name: resilio-sync
+    state: present
+  register: rslsync_yum_repository
+
+- name: Importing the resilio-sync public key
+  tags: rslsync
+  rpm_key:
+    key: "https://linux-packages.resilio.com/resilio-sync/key.asc"
+    state: present
+  register: rslsync_rpm_key
+
+- name: Ensure that the resilio-sync package is installed
+  tags: rslsync
+  yum:
+   enablerepo: resilio-sync
+   name: resilio-sync
+   state: present
+   update_cache: yes
+  register: rslsync_yum
+  when:
+    - rslsync_yum_repository|success
+    - rslsync_rpm_key|success
+
+- block:
+    - name: Applying config.json configuration
+      template:
+        src: config.json.j2
+        dest: /etc/resilio-sync/config.json
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Creating hidden sync directories (if applicable)
+      file:
+        path: "{{ item.dir }}/.sync"
+        owner: rslsync
+        group: rslsync
+        mode: 0775
+        state: directory
+      with_items: "{{ rslsync_shared_folders }}"
+
+    - name: Enable and start the resilio-sync service
+      service:
+        enabled: yes
+        name: resilio-sync
+        state: started
+  tags: rslsync
+  when: rslsync_yum|success
+...

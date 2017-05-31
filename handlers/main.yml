@@ -1,0 +1,7 @@
+---
+- name: restart resilio-sync
+  tags: rslsync
+  service:
+    name: resilio-sync
+    state: restarted
+...

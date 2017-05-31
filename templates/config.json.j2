@@ -1,0 +1,44 @@
+{
+  "device_name" : "{{ rslsync_device_name if rslsync_device_name is defined else inventory_hostname }}",
+  "listening_port" : {{ rslsync_listening_port if rslsync_listening_port is defined else '0' }},
+  "storage_path" : "{{ rslsync_storage_path if rslsync_storage_path is defined else '/var/lib/resilio-sync/' }}",
+  "pid_file" : "{{ rslsync_pid_file if rslsync_pid_file is defined else '/var/run/resilio-sync/sync.pid' }}",
+  "use_upnp" : {{ rslsync_use_upnp|lower if rslsync_use_upnp is defined and not rslsync_use_upnp else 'true' }},
+  "download_limit" : {{ rslsync_download_limit if rslsync_download_limit is defined else '0' }},
+  "upload_limit" : {{ rslsync_upload_limit if rslsync_upload_limit is defined else '0' }},
+  "directory_root" : "{{ rslsync_directory_root if rslsync_directory_root is defined else '/' }}",
+  "directory_root_policy" : "{{ rslsync_directory_root_policy if rslsync_directory_root_policy is defined else 'all' }}",
+{% if rslsync_shared_folders is defined %}
+  "shared_folders" :
+  [
+{%   for rsf in rslsync_shared_folders %}
+{%     if rsf.dir is defined and rsf.known_hosts is defined %}
+    {
+{%       for kh in rsf.known_hosts %}
+{%         if kh.name == inventory_hostname %}
+      "secret" : "{{ kh.secret }}",
+{%         endif %}
+{%       endfor %}
+      "dir" : "{{ rsf.dir }}",
+      "use_relay_server" : {{ rsf.use_relay_server|lower if rsf.use_relay_server is defined and not rsf.use_relay_server else 'true' }},
+      "use_tracker" : {{ rsf.use_tracker|lower if rsf.use_tracker is defined and not rsf.use_tracker else 'true' }},
+      "search_lan" : {{ rsf.search_lan|lower if rsf.search_lan is defined and not rsf.search_lan else 'true' }},
+      "use_sync_trash" : {{ rsf.use_sync_trash|lower if rsf.use_sync_trash is defined and not rsf.use_sync_trash else 'true' }},
+      "overwrite_changes" : {{ rsf.overwrite_changes|lower if rsf.overwrite_changes is defined and rsf.overwrite_changes else 'false' }},
+      "selective_sync" : {{ rsf.selective_sync|lower if rsf.selective_sync is defined and rsf.selective_sync else 'false' }},
+      "known_hosts" :
+      [
+{%       for kh in rsf.known_hosts %}
+{%         if kh.name != inventory_hostname %}
+        "{{ kh.name }}:{{ kh.port }}"{% if not loop.last %},{% endif %}
+
+{%         endif %}
+{%       endfor %}
+      ]
+    }{% if not loop.last %},{% endif %}
+
+{%     endif %}
+{%   endfor %}
+  ]
+{% endif %}
+}
