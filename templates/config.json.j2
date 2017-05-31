@@ -11,26 +11,29 @@
 {% if rslsync_shared_folders is defined %}
   "shared_folders" :
   [
-{%   for rsf in rslsync_shared_folders %}
-{%     if rsf.dir is defined and rsf.known_hosts is defined %}
+{%   for sf in rslsync_shared_folders %}
+{%     if sf.dir is defined and sf.known_hosts is defined %}
     {
-{%       for kh in rsf.known_hosts %}
-{%         if kh.name == inventory_hostname %}
-      "secret" : "{{ kh.secret }}",
+{%       for known_host in sf.known_hosts %}
+{%         if known_host.name == inventory_hostname %}
+      "secret" : "{{ known_host.secret }}",
 {%         endif %}
 {%       endfor %}
-      "dir" : "{{ rsf.dir }}",
-      "use_relay_server" : {{ rsf.use_relay_server|lower if rsf.use_relay_server is defined and not rsf.use_relay_server else 'true' }},
-      "use_tracker" : {{ rsf.use_tracker|lower if rsf.use_tracker is defined and not rsf.use_tracker else 'true' }},
-      "search_lan" : {{ rsf.search_lan|lower if rsf.search_lan is defined and not rsf.search_lan else 'true' }},
-      "use_sync_trash" : {{ rsf.use_sync_trash|lower if rsf.use_sync_trash is defined and not rsf.use_sync_trash else 'true' }},
-      "overwrite_changes" : {{ rsf.overwrite_changes|lower if rsf.overwrite_changes is defined and rsf.overwrite_changes else 'false' }},
-      "selective_sync" : {{ rsf.selective_sync|lower if rsf.selective_sync is defined and rsf.selective_sync else 'false' }},
+      "dir" : "{{ sf.dir }}",
+      "use_relay_server" : {{ sf.use_relay_server|lower if sf.use_relay_server is defined and not sf.use_relay_server else 'true' }},
+      "use_tracker" : {{ sf.use_tracker|lower if sf.use_tracker is defined and not sf.use_tracker else 'true' }},
+      "search_lan" : {{ sf.search_lan|lower if sf.search_lan is defined and not sf.search_lan else 'true' }},
+      "use_sync_trash" : {{ sf.use_sync_trash|lower if sf.use_sync_trash is defined and not sf.use_sync_trash else 'true' }},
+      "overwrite_changes" : {{ sf.overwrite_changes|lower if sf.overwrite_changes is defined and sf.overwrite_changes else 'false' }},
+      "selective_sync" : {{ sf.selective_sync|lower if sf.selective_sync is defined and sf.selective_sync else 'false' }},
       "known_hosts" :
       [
-{%       for kh in rsf.known_hosts %}
-{%         if kh.name != inventory_hostname %}
-        "{{ kh.name }}:{{ kh.port }}"{% if not loop.last %},{% endif %}
+{%       set x = 0 %}
+{%       for known_host in sf.known_hosts %}
+{%         set l = loop.length - 1 %}
+{%         if known_host.name != inventory_hostname %}
+{%            set x = x + 1 %}
+        "{{ known_host.name }}:{{ known_host.port }}"{% if x != l %},{% endif %}
 
 {%         endif %}
 {%       endfor %}
