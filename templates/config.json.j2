@@ -1,13 +1,13 @@
 {
-  "device_name" : "{{ rslsync_device_name if rslsync_device_name is defined else inventory_hostname }}",
-  "listening_port" : {{ rslsync_listening_port if rslsync_listening_port is defined else '0' }},
-  "storage_path" : "{{ rslsync_storage_path if rslsync_storage_path is defined else '/var/lib/resilio-sync/' }}",
-  "pid_file" : "{{ rslsync_pid_file if rslsync_pid_file is defined else '/var/run/resilio-sync/sync.pid' }}",
-  "use_upnp" : {{ rslsync_use_upnp|lower if rslsync_use_upnp is defined and not rslsync_use_upnp else 'true' }},
-  "download_limit" : {{ rslsync_download_limit if rslsync_download_limit is defined else '0' }},
-  "upload_limit" : {{ rslsync_upload_limit if rslsync_upload_limit is defined else '0' }},
-  "directory_root" : "{{ rslsync_directory_root if rslsync_directory_root is defined else '/' }}",
-  "directory_root_policy" : "{{ rslsync_directory_root_policy if rslsync_directory_root_policy is defined else 'all' }}",
+  "device_name" : "{{ rslsync_device_name }}",
+  "listening_port" : {{ rslsync_listening_port }},
+  "storage_path" : "{{ rslsync_storage_path }}",
+  "pid_file" : "{{ rslsync_pid_file }}",
+  "use_upnp" : {{ rslsync_use_upnp|lower }},
+  "download_limit" : {{ rslsync_download_limit }},
+  "upload_limit" : {{ rslsync_upload_limit }},
+  "directory_root" : "{{ rslsync_directory_root }}",
+  "directory_root_policy" : "{{ rslsync_directory_root_policy }}",
 {% if rslsync_shared_folders is defined %}
   "shared_folders" :
   [
