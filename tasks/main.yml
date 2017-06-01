@@ -47,6 +47,7 @@
         mode: 0775
         state: directory
       with_items: "{{ rslsync_shared_folders }}"
+      when: item.dir is defined
 
     - name: Enable and start the resilio-sync service
       service:
