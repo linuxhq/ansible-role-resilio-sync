@@ -20,12 +20,12 @@
 {%         endif %}
 {%       endfor %}
       "dir" : "{{ sf.dir }}",
-      "use_relay_server" : {{ sf.use_relay_server|lower if sf.use_relay_server is defined and not sf.use_relay_server else 'true' }},
-      "use_tracker" : {{ sf.use_tracker|lower if sf.use_tracker is defined and not sf.use_tracker else 'true' }},
-      "search_lan" : {{ sf.search_lan|lower if sf.search_lan is defined and not sf.search_lan else 'true' }},
-      "use_sync_trash" : {{ sf.use_sync_trash|lower if sf.use_sync_trash is defined and not sf.use_sync_trash else 'true' }},
-      "overwrite_changes" : {{ sf.overwrite_changes|lower if sf.overwrite_changes is defined and sf.overwrite_changes else 'false' }},
-      "selective_sync" : {{ sf.selective_sync|lower if sf.selective_sync is defined and sf.selective_sync else 'false' }},
+      "use_relay_server" : {{ 'false' if sf.use_relay_server is defined and not sf.use_relay_server else 'true' }},
+      "use_tracker" : {{ 'false' if sf.use_tracker is defined and not sf.use_tracker else 'true' }},
+      "search_lan" : {{ 'false' if sf.search_lan is defined and not sf.search_lan else 'true' }},
+      "use_sync_trash" : {{ 'false' if sf.use_sync_trash is defined and not sf.use_sync_trash else 'true' }},
+      "overwrite_changes" : {{ 'true' if sf.overwrite_changes is defined and sf.overwrite_changes else 'false' }},
+      "selective_sync" : {{ 'true' if sf.selective_sync is defined and sf.selective_sync else 'false' }},
       "known_hosts" :
       [
 {%       set x = 1 %}
