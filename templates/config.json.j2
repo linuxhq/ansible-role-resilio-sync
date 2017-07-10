@@ -6,6 +6,16 @@
   "use_upnp" : {{ rslsync_use_upnp|lower }},
   "download_limit" : {{ rslsync_download_limit }},
   "upload_limit" : {{ rslsync_upload_limit }},
+{% for option, value in rslsync_advanced_options.iteritems() %}
+  "{{ option }}": {% if value is string %}"{{ value }}"{% else %}{{ value|lower }}{% endif %},
+
+{% endfor %}
+  "webui" : {
+    "listen" : "{{ rslsync_webui_bind_ip }}:{{ rslsync_webui_port }}",
+    "login": "{{ rslsync_webui_login }}",
+    "password": "{{ rslsync_webui_password }}",
+    "allow_empty_password": {{ rslsync_webui_allow_empty_password|lower }}
+  },
   "directory_root" : "{{ rslsync_directory_root }}",
   "directory_root_policy" : "{{ rslsync_directory_root_policy }}",
 {% if rslsync_shared_folders is defined %}

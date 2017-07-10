@@ -9,4 +9,10 @@ rslsync_shared_folders: []
 rslsync_storage_path: /var/lib/resilio-sync/
 rslsync_upload_limit: 0
 rslsync_use_upnp: True
+rslsync_advanced_options: []
+rslsync_webui_bind_ip: 127.0.0.1
+rslsync_webui_port: 8888
+rslsync_webui_login: admin
+rslsync_webui_password: admin
+rslsync_webui_allow_empty_password: False
 ...

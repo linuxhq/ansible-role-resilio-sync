@@ -22,6 +22,18 @@ Available variables are listed below, along with default values.
     rslsync_storage_path: /var/lib/resilio-sync/
     rslsync_upload_limit: 0
     rslsync_use_upnp: True
+    rslsync_advanced_options: {}
+    rslsync_webui_bind_ip: 127.0.0.1
+    rslsync_webui_port: 8888
+    rslsync_webui_login: admin
+    rslsync_webui_password: admin
+    rslsync_webui_allow_empty_password: False
+
+Advanced options is key/val list. You can use any valid options from [documentation](https://help.resilio.com/hc/en-us/articles/207371636-Power-user-preferences)
+
+    rslsync_advanced_options:
+        lan_encrypt_data: False
+        disk_low_priority: True
 
 ## Dependencies
 
@@ -29,11 +41,15 @@ None
 
 ## Example Playbook
 
+### With shared folders
     - hosts: servers
       roles:
         - role: linuxhq.resilio-sync
           rslsync_device_name: "{{ inventory_hostname.split('.')[0] }}"
           rslsync_listening_port: 6881
+          rslsync_advanced_options:
+            lan_encrypt_data: False
+            disk_low_priority: True
           rslsync_shared_folders:
             - dir: /usr/local/etc/
               use_relay_server: False
@@ -52,6 +68,21 @@ None
                 - name: rslsync3.linuxhq.org
                   port: 6881
                   secret: B2O7EQSBFIGLM4K5SMZVB625MY7X3KUOI
+                  
+### With Web UI
+    - hosts: servers
+      roles:
+        - role: linuxhq.resilio-sync
+          rslsync_device_name: "{{ inventory_hostname.split('.')[0] }}"
+          rslsync_listening_port: 6881
+          rslsync_webui_bind_ip: 0.0.0.0
+          rslsync_webui_port: 8888
+          rslsync_webui_login: admin
+          rslsync_webui_password: admin
+          rslsync_webui_allow_empty_password: false
+          rslsync_advanced_options:
+            lan_encrypt_data: False
+            disk_low_priority: True
 
 ## License
 
