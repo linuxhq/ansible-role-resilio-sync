@@ -6,34 +6,30 @@
   "use_upnp" : {{ rslsync_use_upnp|lower }},
   "download_limit" : {{ rslsync_download_limit }},
   "upload_limit" : {{ rslsync_upload_limit }},
-
-{%- for option, value in rslsync_advanced_options.iteritems() %}
+{% for option, value in rslsync_advanced_options.iteritems() %}
   "{{ option }}": {% if value is string %}"{{ value }}"{% else %}{{ value|lower }}{% endif %},
-{%- endfor %}
-
-{%- if rslsync_shared_folders is not defined or rslsync_shared_folders|length == 0 %}
+{% endfor %}
+{% if rslsync_shared_folders is not defined or rslsync_shared_folders|length == 0 %}
   "webui" : {
     "listen" : "{{ rslsync_webui_bind_ip }}:{{ rslsync_webui_port }}",
     "login": "{{ rslsync_webui_login }}",
     "password": "{{ rslsync_webui_password }}",
     "allow_empty_password": {{ rslsync_webui_allow_empty_password|lower }}
   },
-{%- endif %}
-
+{% endif %}
   "directory_root" : "{{ rslsync_directory_root }}",
   "directory_root_policy" : "{{ rslsync_directory_root_policy }}",
-
-{%- if rslsync_shared_folders is defined and rslsync_shared_folders|length > 0 %}
+{% if rslsync_shared_folders is defined and rslsync_shared_folders|length > 0 %}
   "shared_folders" :
   [
-{%-   for sf in rslsync_shared_folders %}
-{%-     if sf.dir is defined and sf.known_hosts is defined %}
+{%   for sf in rslsync_shared_folders %}
+{%     if sf.dir is defined and sf.known_hosts is defined %}
     {
-{%-       for known_host in sf.known_hosts %}
-{%-         if known_host.name == inventory_hostname %}
+{%       for known_host in sf.known_hosts %}
+{%         if known_host.name == inventory_hostname %}
       "secret" : "{{ known_host.secret }}",
-{%-         endif %}
-{%-       endfor %}
+{%         endif %}
+{%       endfor %}
       "dir" : "{{ sf.dir }}",
       "use_relay_server" : {{ 'false' if sf.use_relay_server is defined and not sf.use_relay_server else 'true' }},
       "use_tracker" : {{ 'false' if sf.use_tracker is defined and not sf.use_tracker else 'true' }},
@@ -43,19 +39,19 @@
       "selective_sync" : {{ 'true' if sf.selective_sync is defined and sf.selective_sync else 'false' }},
       "known_hosts" :
       [
-{%-       set x = 1 %}
-{%-       for known_host in sf.known_hosts %}
-{%-         if known_host.name != inventory_hostname %}
-{%-            set x = x + 1 %}
+{%       set x = 1 %}
+{%       for known_host in sf.known_hosts %}
+{%         if known_host.name != inventory_hostname %}
+{%            set x = x + 1 %}
         "{{ known_host.name }}:{{ known_host.port }}"{%- if x < loop.length %},{% endif %}
 
-{%-         endif %}
-{%-       endfor %}
+{%         endif %}
+{%       endfor %}
       ]
     }{% if not loop.last %},{% endif %}
 
-{%-     endif %}
-{%-   endfor %}
+{%     endif %}
+{%   endfor %}
   ]
-{%- endif %}
+{% endif %}
 }
