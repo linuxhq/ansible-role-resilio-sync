@@ -1,5 +1,5 @@
 ---
-- name: Creating resilio-sync repository
+- name: Creating resilio-sync yum repository
   tags: rslsync
   become: true
   yum_repository:
@@ -11,7 +11,7 @@
     state: present
   register: rslsync_yum_repository
 
-- name: Importing the resilio-sync public key
+- name: Ensure that the Resilio Sync GPG keys are installed
   tags: rslsync
   become: true
   rpm_key:
@@ -52,7 +52,7 @@
       with_items: "{{ rslsync_shared_folders }}"
       when: item.dir is defined
 
-    - name: Enable and start the resilio-sync service
+    - name: Enable and start the resilio-sync service on boot
       service:
         enabled: yes
         name: resilio-sync
