@@ -1,6 +1,7 @@
 ---
 - name: restart resilio-sync
   tags: rslsync
+  become: true
   service:
     name: resilio-sync
     state: restarted

@@ -1,6 +1,7 @@
 ---
 - name: Creating resilio-sync repository
   tags: rslsync
+  become: true
   yum_repository:
     baseurl: "http://linux-packages.resilio.com/resilio-sync/rpm/$basearch"
     description: "Resilio Sync $basearch"
@@ -12,6 +13,7 @@
 
 - name: Importing the resilio-sync public key
   tags: rslsync
+  become: true
   rpm_key:
     key: "https://linux-packages.resilio.com/resilio-sync/key.asc"
     state: present
@@ -19,6 +21,7 @@
 
 - name: Ensure that the resilio-sync package is installed
   tags: rslsync
+  become: true
   yum:
    enablerepo: resilio-sync
    name: resilio-sync
@@ -55,5 +58,6 @@
         name: resilio-sync
         state: started
   tags: rslsync
+  become: true
   when: rslsync_yum|success
 ...
