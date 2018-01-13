@@ -21,6 +21,7 @@
     owner: root
     group: root
     mode: 0644
+  register: rslsync_get_url
 
 - name: Ensure that the resilio-sync gpg key is installed
   tags: rslsync
@@ -40,8 +41,9 @@
    update_cache: yes
   register: rslsync_yum
   when:
-    - rslsync_yum_repository|success
+    - rslsync_get_url|success
     - rslsync_rpm_key|success
+    - rslsync_yum_repository|success
 
 - block:
     - name: Applying config.json configuration
