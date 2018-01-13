@@ -6,16 +6,27 @@
     baseurl: "http://linux-packages.resilio.com/resilio-sync/rpm/$basearch"
     description: "Resilio Sync $basearch"
     enabled: yes
+    gpgkey: "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-resilio-sync"
     gpgcheck: yes
     name: resilio-sync
     state: present
   register: rslsync_yum_repository
 
-- name: Ensure that the Resilio Sync GPG keys are installed
+- name: Downloading the resilio-sync gpg key to store locally
+  tags: rslsync
+  become: true
+  get_url:
+    url: "https://linux-packages.resilio.com/resilio-sync/key.asc"
+    dest: "/etc/pki/rpm-gpg/RPM-GPG-KEY-resilio-sync"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Ensure that the resilio-sync gpg key is installed
   tags: rslsync
   become: true
   rpm_key:
-    key: "https://linux-packages.resilio.com/resilio-sync/key.asc"
+    key: "/etc/pki/rpm-gpg/RPM-GPG-KEY-resilio-sync"
     state: present
   register: rslsync_rpm_key
 
