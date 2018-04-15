@@ -1,12 +1,12 @@
 ---
-- name: Creating resilio-sync yum repository
+- name: Attempting to overlay resilio-sync yum repository
   tags: rslsync
   become: true
   yum_repository:
-    baseurl: "http://linux-packages.resilio.com/resilio-sync/rpm/$basearch"
-    description: "Resilio Sync $basearch"
+    baseurl: 'http://linux-packages.resilio.com/resilio-sync/rpm/$basearch'
+    description: 'Resilio Sync $basearch'
     enabled: yes
-    gpgkey: "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-resilio-sync"
+    gpgkey: 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-resilio-sync'
     gpgcheck: yes
     name: resilio-sync
     state: present
@@ -16,20 +16,21 @@
   tags: rslsync
   become: true
   get_url:
-    url: "https://linux-packages.resilio.com/resilio-sync/key.asc"
-    dest: "/etc/pki/rpm-gpg/RPM-GPG-KEY-resilio-sync"
+    dest: /etc/pki/rpm-gpg/RPM-GPG-KEY-resilio-sync
     owner: root
     group: root
     mode: 0644
+    url: 'https://linux-packages.resilio.com/resilio-sync/key.asc'
   register: rslsync_get_url
 
 - name: Ensure that the resilio-sync gpg key is installed
   tags: rslsync
   become: true
   rpm_key:
-    key: "/etc/pki/rpm-gpg/RPM-GPG-KEY-resilio-sync"
+    key: /etc/pki/rpm-gpg/RPM-GPG-KEY-resilio-sync
     state: present
   register: rslsync_rpm_key
+  when: rslsync_get_url is success
 
 - name: Ensure that the resilio-sync package is installed
   tags: rslsync
@@ -38,39 +39,19 @@
    enablerepo: resilio-sync
    name: resilio-sync
    state: present
-   update_cache: yes
   register: rslsync_yum
   when:
-    - rslsync_get_url|success
-    - rslsync_rpm_key|success
-    - rslsync_yum_repository|success
+    - rslsync_get_url is success
+    - rslsync_rpm_key is success
+    - rslsync_yum_repository is success
 
-- block:
-    - name: Applying config.json configuration
-      template:
-        src: config.json.j2
-        dest: /etc/resilio-sync/config.json
-        owner: root
-        group: root
-        mode: 0644
-      notify: restart resilio-sync 
-
-    - name: Creating hidden sync directories (if applicable)
-      file:
-        path: "{{ item.dir }}/.sync"
-        owner: rslsync
-        group: rslsync
-        mode: 0775
-        state: directory
-      with_items: "{{ rslsync_shared_folders }}"
-      when: item.dir is defined
-
-    - name: Enable and start the resilio-sync service on boot
-      service:
-        enabled: yes
-        name: resilio-sync
-        state: started
+- name: Attempting to import resilio-sync tasks
   tags: rslsync
   become: true
-  when: rslsync_yum|success
+  block:
+    - import_tasks: rslsync_groupmod.yml
+    - import_tasks: rslsync_directories.yml
+    - import_tasks: rslsync_configuration.yml
+    - import_tasks: rslsync_service.yml
+  when: rslsync_yum is success
 ...

@@ -1,0 +1,12 @@
+---
+- name: Attempting to overlay resilio-sync configurations
+  template:
+    src: config.json.j2
+    dest: /etc/resilio-sync/config.json
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart resilio-sync
+  register: rslsync_template
+  when: rslsync_file is success
+...

@@ -1,0 +1,14 @@
+---
+- name: Attempting to create hidden sync directories, if applicable
+  file:
+    path: "{{ item.value.dir }}/.sync"
+    owner: rslsync
+    group: rslsync
+    mode: 0775
+    state: directory
+  register: rslsync_file
+  with_dict: "{{ rslsync_shared_folders }}"
+  when:
+    - item.value.dir is defined
+    - rslsync_shared_folders|length > 0
+...

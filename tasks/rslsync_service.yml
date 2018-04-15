@@ -1,0 +1,9 @@
+---
+- name: Ensure that resilio-sync is started and enabled on boot
+  service:
+    enabled: yes
+    name: resilio-sync
+    state: started
+  when:
+    - rslsync_template is success
+...

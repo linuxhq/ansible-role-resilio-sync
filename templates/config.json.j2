@@ -1,53 +1,93 @@
 {
+  "bind_interface" : "{{ rslsync_bind_interface }}",
+  "config_refresh_interval" : {{ rslsync_config_refresh_interval }},
+  "config_save_interval" : {{ rslsync_config_save_interval }},
   "device_name" : "{{ rslsync_device_name }}",
-  "listening_port" : {{ rslsync_listening_port }},
-  "storage_path" : "{{ rslsync_storage_path }}",
-  "pid_file" : "{{ rslsync_pid_file }}",
-  "use_upnp" : {{ rslsync_use_upnp|lower }},
-  "download_limit" : {{ rslsync_download_limit }},
-  "upload_limit" : {{ rslsync_upload_limit }},
-{% for option, value in rslsync_advanced_options.iteritems() %}
-  "{{ option }}": {% if value is string %}"{{ value }}"{% else %}{{ value|lower }}{% endif %},
-{% endfor %}
-{% if rslsync_shared_folders is not defined or rslsync_shared_folders|length == 0 %}
-  "webui" : {
-    "listen" : "{{ rslsync_webui_bind_ip }}:{{ rslsync_webui_port }}",
-    "login": "{{ rslsync_webui_login }}",
-    "password": "{{ rslsync_webui_password }}",
-    "allow_empty_password": {{ rslsync_webui_allow_empty_password|lower }}
-  },
-{% endif %}
   "directory_root" : "{{ rslsync_directory_root }}",
   "directory_root_policy" : "{{ rslsync_directory_root_policy }}",
-{% if rslsync_shared_folders is defined and rslsync_shared_folders|length > 0 %}
-  "shared_folders" :
-  [
-{%   for sf in rslsync_shared_folders %}
-{%     if sf.dir is defined and sf.known_hosts is defined %}
-    {
-{%       for known_host in sf.known_hosts %}
-{%         if known_host.name == inventory_hostname %}
-      "secret" : "{{ known_host.secret }}",
-{%         endif %}
-{%       endfor %}
-      "dir" : "{{ sf.dir }}",
-      "use_relay_server" : {{ 'false' if sf.use_relay_server is defined and not sf.use_relay_server else 'true' }},
-      "use_tracker" : {{ 'false' if sf.use_tracker is defined and not sf.use_tracker else 'true' }},
-      "search_lan" : {{ 'false' if sf.search_lan is defined and not sf.search_lan else 'true' }},
-      "use_sync_trash" : {{ 'false' if sf.use_sync_trash is defined and not sf.use_sync_trash else 'true' }},
-      "overwrite_changes" : {{ 'true' if sf.overwrite_changes is defined and sf.overwrite_changes else 'false' }},
-      "selective_sync" : {{ 'true' if sf.selective_sync is defined and sf.selective_sync else 'false' }},
-      "known_hosts" :
-      [
-{%       for known_host in sf.known_hosts %}
-        "{{ known_host.name }}:{{ known_host.port }}"{% if not loop.last %},{% endif %}
-
-{%       endfor %}
-      ]
-    }{% if not loop.last %},{% endif %}
-
+  "disk_low_priority" : {{ 'true' if rslsync_disk_low_priority|bool else 'false' }},
+  "download_limit" : {{ rslsync_download_limit }},
+  "enable_file_system_notifications" : {{ 'true' if rslsync_enable_file_system_notifications|bool else 'false' }},
+  "enable_journaling" : {{ rslsync_enable_journaling|lower }},
+  "external_port" : {{ rslsync_external_port|int }},
+  "folder_defaults.use_lan_broadcast" : {{ 'true' if rslsync_folder_defaults_use_lan_broadcast|bool else 'false' }},
+  "folder_defaults.use_relay" : {{ 'true' if rslsync_folder_defaults_use_relay|bool else 'false' }},
+  "folder_defaults.use_tracker" : {{ 'true' if rslsync_folder_defaults_use_tracker|bool else 'false' }},
+  "folder_rescan_interval" : {{ rslsync_folder_rescan_interval|int }},
+  "lan_encrypt_data" : {{ 'true' if rslsync_lan_encrypt_data|bool else 'false' }},
+  "listening_port" : {{ rslsync_listening_port }},
+  "log_size" : {{ rslsync_log_size }},
+  "log_ttl" : {{ rslsync_log_ttl }},
+  "max_file_size_for_versioning" : {{ rslsync_max_file_size_for_versioning }},
+  "max_packet_size" : {{ rslsync_max_packet_size }},
+  "max_torrent_metadata_size" : {{ rslsync_max_torrent_metadata_size }},
+  "peer_expiration_days" : {{ rslsync_peer_expiration_days }},
+  "pid_file" : "{{ rslsync_pid_file }}",
+  "profiler_enabled" : {{ 'true' if rslsync_profiler_enabled|bool else 'false' }},
+  "rate_limit_local_peers" : {{ 'true' if rslsync_rate_limit_local_peers|bool else 'false' }},
+  "recv_buf_size" : {{ rslsync_recv_buf_size }},
+  "send_buf_size" : {{ rslsync_send_buf_size }},
+  "send_statistics" : {{ 'true' if rslsync_send_statistics|bool else 'false' }},
+  "storage_path" : "{{ rslsync_storage_path }}",
+  "sync_max_time_diff" : {{ rslsync_sync_max_time_diff }},
+  "sync_trash_ttl" : {{ rslsync_sync_trash_ttl }},
+  "upload_limit" : {{ rslsync_upload_limit }},
+  "use_upnp" : {{ 'true' if rslsync_use_upnp|bool else 'false' }},
+  "worker_threads_count" : {{ rslsync_worker_threads_count }},
+{% if rslsync_proxy|length > 0 %}
+{%   for key, value in rslsync_proxy.iteritems()|sort %}
+{%     if value is sameas true %}
+  "{{ key }}" : true,
+{%     elif value is sameas false %}
+  "{{ key }}" : false,
+{%     elif value is string %}
+  "{{ key }}" : "{{ value }}",
+{%     else %}
+  "{{ key }}" : {{ value }},
 {%     endif %}
 {%   endfor %}
+{% endif %}
+{% if rslsync_shared_folders|length > 0 %}
+  "shared_folders" :
+  [
+{%   for folder in rslsync_shared_folders %}
+    {
+{%     for key, value in rslsync_shared_folders[folder].iteritems()|sort %}
+{%-      if value is sameas true %}
+      "{{ key }}" : true
+{%-      elif value is sameas false %}
+      "{{ key }}" : false
+{%-      elif value is string %}
+      "{{ key }}" : "{{ value }}"
+{%-      elif value is number %}
+      "{{ key }}" : {{ value }}
+{%-      else %}
+      "{{ key }}" :
+      [
+{%         for v in value %}
+        "{{ v }}:{{ rslsync_listening_port }}"{{ ',' if not loop.last else '' }}
+{%         endfor %}
+      ]
+{%-       endif %}{% if not loop.last %},{% endif %}
+{%     endfor %}
+    }{{ ',' if not loop.last else '' }}
+{%   endfor %}
   ]
+{% endif %}
+{% if rslsync_webui|length > 0 %}
+  "webui" :
+  {
+{%   for key, value in rslsync_webui.iteritems()|sort %}
+{%-    if value is sameas true %}
+    "{{ key }}" : true
+{%-    elif value is sameas false %}
+    "{{ key }}" : false
+{%-    elif value is string %}
+    "{{ key }}" : "{{ value }}"
+{%-    else %}
+    "{{ key }}" : {{ value }}
+{%-    endif %}{{ ',' if not loop.last else '' }}
+{%   endfor %}
+  }
 {% endif %}
 }
