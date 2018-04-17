@@ -47,7 +47,7 @@
 {%     endif %}
 {%   endfor %}
 {% endif %}
-{% if rslsync_shared_folders|length > 0 and rslsync_webui < 1 %}
+{% if rslsync_shared_folders|length > 0 and rslsync_webui|length < 1 %}
   "shared_folders" :
   [
 {%   for folder in rslsync_shared_folders %}
