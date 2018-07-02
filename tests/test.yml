@@ -2,5 +2,5 @@
 - hosts: localhost
   remote_user: root
   roles:
-    - ansible-role-resilio-sync
+    - ansible-role-resilio_sync
 ...

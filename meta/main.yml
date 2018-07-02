@@ -1,6 +1,7 @@
 ---
 dependencies: []
 galaxy_info:
+  role_name: resilio_sync
   author: tkimball83
   description: RHEL/CentOS - All your data across all your devices
   license: GPLv3

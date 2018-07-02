@@ -1,7 +1,7 @@
-# ansible-role-resilio-sync
+# ansible-role-resilio_sync
 
-[![Build Status](https://travis-ci.org/linuxhq/ansible-role-resilio-sync.svg?branch=master)](https://travis-ci.org/linuxhq/ansible-role-resilio-sync)
-[![Ansible Galaxy](https://img.shields.io/badge/ansible--galaxy-resilio--sync-blue.svg?style=flat)](https://galaxy.ansible.com/linuxhq/resilio-sync)
+[![Build Status](https://travis-ci.org/linuxhq/ansible-role-resilio_sync.svg?branch=master)](https://travis-ci.org/linuxhq/ansible-role-resilio_sync)
+[![Ansible Galaxy](https://img.shields.io/badge/ansible--galaxy-resilio_sync-blue.svg?style=flat)](https://galaxy.ansible.com/linuxhq/resilio_sync)
 [![License](https://img.shields.io/badge/license-GPLv3-brightgreen.svg?style=flat)](COPYING)
 
 RHEL/CentOS - All your data across all your devices
@@ -68,7 +68,7 @@ None
 
     - hosts: servers
       roles:
-        - role: linuxhq.resilio-sync
+        - role: linuxhq.resilio_sync
           rslsync_device_name: "{{ inventory_hostname.split('.')[0] }}"
           rslsync_groups:
             - couchpotato
@@ -91,7 +91,7 @@ None
 
     - hosts: servers
       roles:
-        - role: linuxhq.resilio-sync
+        - role: linuxhq.resilio_sync
           rslsync_device_name: "{{ inventory_hostname.split('.')[0] }}"
           rslsync_groups:
             - couchpotato
