@@ -97,8 +97,7 @@
       ]
 {%-      else %}
       "{{ key }}" : "{{ value }}"
-{%-      endif %}{% if not loop.last %},{% endif %}
-
+{%-      endif %}{{ ',' if not loop.last else '' }}
 {%     endfor %}
     }{{ ',' if not loop.last else '' }}
 {%   endfor %}
