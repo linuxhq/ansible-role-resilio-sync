@@ -1,39 +1,66 @@
 {
   "bind_interface" : "{{ rslsync_bind_interface }}",
-  "config_refresh_interval" : {{ rslsync_config_refresh_interval }},
-  "config_save_interval" : {{ rslsync_config_save_interval }},
+  "config_refresh_interval" : {{ rslsync_config_refresh_interval|int }},
+  "config_save_interval" : {{ rslsync_config_save_interval|int }},
   "device_name" : "{{ rslsync_device_name }}",
+  "direct_torrent_enabled" : {{ 'true' if rslsync_direct_torrent_enabled|bool else 'false' }},
   "directory_root" : "{{ rslsync_directory_root }}",
   "directory_root_policy" : "{{ rslsync_directory_root_policy }}",
+  "disable_remove_from_all_devices" : {{ 'true' if rslsync_disable_remove_from_all_devices|bool else 'false' }},
+  "disk_min_free_space" : "{{ rslsync_disk_min_free_space }}",
+  "disk_min_free_space_gb" : {{ rslsync_disk_min_free_space_gb|int }},
   "disk_low_priority" : {{ 'true' if rslsync_disk_low_priority|bool else 'false' }},
   "download_limit" : {{ rslsync_download_limit }},
   "enable_file_system_notifications" : {{ 'true' if rslsync_enable_file_system_notifications|bool else 'false' }},
-  "enable_journaling" : {{ rslsync_enable_journaling|lower }},
+  "enable_warning_no_source" : {{ 'true' if rslsync_enable_warning_no_source|bool else 'false' }},
   "external_port" : {{ rslsync_external_port|int }},
+  "fix_conflicting_paths" : {{ 'true' if rslsync_fix_conflicting_paths|bool else 'false' }},
+  "folder_defaults.delete_unknown_files" : {{ 'true' if rslsync_folder_defaults_delete_unknown_files|bool else 'false' }},
+  "folder_defaults.known_hosts" : "{{ rslsync_folder_defaults_known_hosts|join(',') if rslsync_folder_defaults_known_hosts|length > 0 else '' }}",
   "folder_defaults.use_lan_broadcast" : {{ 'true' if rslsync_folder_defaults_use_lan_broadcast|bool else 'false' }},
   "folder_defaults.use_relay" : {{ 'true' if rslsync_folder_defaults_use_relay|bool else 'false' }},
   "folder_defaults.use_tracker" : {{ 'true' if rslsync_folder_defaults_use_tracker|bool else 'false' }},
   "folder_rescan_interval" : {{ rslsync_folder_rescan_interval|int }},
+  "free_space_warning_threshold" : {{ rslsync_free_space_warning_threshold|int }},
+  "ignore_symlinks" : {{ 'true' if rslsync_ignore_symlinks|bool else 'false' }},
+  "keep_expired_transfer_days" : {{ rslsync_keep_expired_transfer_days|int }},
   "lan_encrypt_data" : {{ 'true' if rslsync_lan_encrypt_data|bool else 'false' }},
+  "lazy_indexing" : {{ 'true' if rslsync_lazy_indexing|bool else 'false' }},
   "listening_port" : {{ rslsync_listening_port }},
-  "log_size" : {{ rslsync_log_size }},
-  "log_ttl" : {{ rslsync_log_ttl }},
-  "max_file_size_for_versioning" : {{ rslsync_max_file_size_for_versioning }},
-  "max_packet_size" : {{ rslsync_max_packet_size }},
-  "max_torrent_metadata_size" : {{ rslsync_max_torrent_metadata_size }},
-  "peer_expiration_days" : {{ rslsync_peer_expiration_days }},
+  "log_size" : {{ rslsync_log_size|int }},
+  "log_ttl" : {{ rslsync_log_ttl|int }},
+  "max_file_size_for_versioning" : {{ rslsync_max_file_size_for_versioning|int }},
+  "max_packet_size" : {{ rslsync_max_packet_size|int }},
+  "max_torrent_metadata_size" : {{ rslsync_max_torrent_metadata_size|int }},
+  "net.udp_ipv4_mtu" : {{ rslsync_net_udp_ipv4_mtu|int }},
+  "net.udp_ipv6_mtu" : {{ rslsync_net_udp_ipv6_mtu|int }},
+  "normalize_unicode_paths" : {{ 'true' if rslsync_normalize_unicode_paths|bool else 'false' }},
+  "overwrite_changes" : {{ 'true' if rslsync_overwrite_changes|bool else 'false' }},
+  "parallel_indexing" : {{ 'true' if rslsync_parallel_indexing|bool else 'false' }},
+  "peer_expiration_days" : {{ rslsync_peer_expiration_days|int }},
   "pid_file" : "{{ rslsync_pid_file }}",
+  "prefer_utp2_lan" : {{ 'true' if rslsync_prefer_utp2_lan|bool else 'false' }},
+  "prioritize_initial_indexing" : {{ 'true' if rslsync_prioritize_initial_indexing|bool else 'false' }},
   "profiler_enabled" : {{ 'true' if rslsync_profiler_enabled|bool else 'false' }},
   "rate_limit_local_peers" : {{ 'true' if rslsync_rate_limit_local_peers|bool else 'false' }},
-  "recv_buf_size" : {{ rslsync_recv_buf_size }},
-  "send_buf_size" : {{ rslsync_send_buf_size }},
   "send_statistics" : {{ 'true' if rslsync_send_statistics|bool else 'false' }},
+  "share_file_ttl" : {{ rslsync_share_file_ttl|int }},
+  "show_service_disk_thread" : {{ 'true' if rslsync_show_service_disk_thread|bool else 'false' }},
   "storage_path" : "{{ rslsync_storage_path }}",
-  "sync_max_time_diff" : {{ rslsync_sync_max_time_diff }},
-  "sync_trash_ttl" : {{ rslsync_sync_trash_ttl }},
+  "sync_extended_attributes" : {{ 'true' if rslsync_sync_extended_attributes|bool else 'false' }},
+  "sync_max_time_diff" : {{ rslsync_sync_max_time_diff|int }},
+  "sync_trash_ttl" : {{ rslsync_sync_trash_ttl|int }},
+  "torrent_max_piece_size" : {{ rslsync_torrent_max_piece_size|int }},
+  "torrent_piece_size_policy" : {{ rslsync_torrent_piece_size_policy|int }},
+  "transfer_job_skip_locked_files" : {{ 'true' if rslsync_transfer_job_skip_locked_files|bool else 'false' }},
+  "tunnel_compress_delay_size" : {{ rslsync_tunnel_compress_delay_size|int }},
+  "tunnel_compress_delay_time" : {{ rslsync_tunnel_compress_delay_time|int }},
+  "tunnel_compress_stream" : {{ 'true' if rslsync_tunnel_compress_stream|bool else 'false' }},
   "upload_limit" : {{ rslsync_upload_limit }},
+  "use_advapi_crypto" : {{ 'true' if rslsync_use_advapi_crypto|bool else 'false' }},
+  "use_only_bind_interface" : {{ 'true' if rslsync_use_only_bind_interface|bool else 'false' }},
   "use_upnp" : {{ 'true' if rslsync_use_upnp|bool else 'false' }},
-  "worker_threads_count" : {{ rslsync_worker_threads_count }},
+  "worker_threads_count" : {{ rslsync_worker_threads_count|int }},
 {% if rslsync_proxy|length > 0 %}
 {%   for key, value in rslsync_proxy.iteritems()|sort %}
 {%     if value is sameas true %}
@@ -61,14 +88,17 @@
       "{{ key }}" : "{{ value }}"
 {%-      elif value is number %}
       "{{ key }}" : {{ value }}
-{%-      else %}
+{%-      elif value is iterable %}
       "{{ key }}" :
       [
 {%         for v in value %}
         "{{ v }}:{{ rslsync_listening_port }}"{{ ',' if not loop.last else '' }}
 {%         endfor %}
       ]
-{%-       endif %}{% if not loop.last %},{% endif %}
+{%-      else %}
+      "{{ key }}" : "{{ value }}"
+{%-      endif %}{% if not loop.last %},{% endif %}
+
 {%     endfor %}
     }{{ ',' if not loop.last else '' }}
 {%   endfor %}

@@ -7,7 +7,9 @@
     mode: 0775
     state: directory
   register: rslsync_file
-  with_dict: "{{ rslsync_shared_folders }}"
+  loop: "{{ rslsync_shared_folders|dict2items|sort }}"
+  loop_control:
+    label: "{{ item.value.dir }}"
   when:
     - item.value.dir is defined
     - rslsync_shared_folders|length > 0

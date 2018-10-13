@@ -10,7 +10,9 @@
     append: yes
     groups: "{{ item }}"
     name: rslsync
-  with_items: "{{ rslsync_groups }}"
+  loop: "{{ rslsync_groups }}"
+  loop_control:
+    label: "{{ item }}"
   when:
     - item in getent_group
     - rslsync_groups|length > 0
