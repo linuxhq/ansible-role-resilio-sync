@@ -62,7 +62,7 @@
   "use_upnp" : {{ 'true' if rslsync_use_upnp|bool else 'false' }},
   "worker_threads_count" : {{ rslsync_worker_threads_count|int }},
 {% if rslsync_proxy|length > 0 %}
-{%   for key, value in rslsync_proxy.iteritems()|sort %}
+{%   for key, value in rslsync_proxy.items()|sort %}
 {%     if value is sameas true %}
   "{{ key }}" : true,
 {%     elif value is sameas false %}
@@ -79,7 +79,7 @@
   [
 {%   for folder in rslsync_shared_folders %}
     {
-{%     for key, value in rslsync_shared_folders[folder].iteritems()|sort %}
+{%     for key, value in rslsync_shared_folders[folder].items()|sort %}
 {%-      if value is sameas true %}
       "{{ key }}" : true
 {%-      elif value is sameas false %}
@@ -106,7 +106,7 @@
 {% if rslsync_webui|length > 0 %}
   "webui" :
   {
-{%   for key, value in rslsync_webui.iteritems()|sort %}
+{%   for key, value in rslsync_webui.items()|sort %}
 {%-    if value is sameas true %}
     "{{ key }}" : true
 {%-    elif value is sameas false %}
