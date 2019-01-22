@@ -44,6 +44,7 @@
         database: group
         split: ':'
     - name: Attempting to append rslsync user to groups
+      become: true
       user:
         append: yes
         groups: "{{ item }}"
