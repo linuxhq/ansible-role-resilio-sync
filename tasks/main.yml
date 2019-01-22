@@ -1,6 +1,6 @@
 ---
 - name: Attempting to overlay resilio-sync yum repository
-  tags: rslsync
+  tags: resilio_sync
   become: true
   yum_repository:
     baseurl: 'http://linux-packages.resilio.com/resilio-sync/rpm/$basearch'
@@ -10,10 +10,9 @@
     gpgcheck: yes
     name: resilio-sync
     state: present
-  register: rslsync_yum_repository
 
 - name: Downloading the resilio-sync gpg key to store locally
-  tags: rslsync
+  tags: resilio_sync
   become: true
   get_url:
     dest: /etc/pki/rpm-gpg/RPM-GPG-KEY-resilio-sync
@@ -21,37 +20,73 @@
     group: root
     mode: 0644
     url: 'https://linux-packages.resilio.com/resilio-sync/key.asc'
-  register: rslsync_get_url
 
 - name: Ensure that the resilio-sync gpg key is installed
-  tags: rslsync
+  tags: resilio_sync
   become: true
   rpm_key:
     key: /etc/pki/rpm-gpg/RPM-GPG-KEY-resilio-sync
     state: present
-  register: rslsync_rpm_key
-  when: rslsync_get_url is success
 
 - name: Ensure that the resilio-sync package is installed
-  tags: rslsync
+  tags: resilio_sync
   become: true
   yum:
    enablerepo: resilio-sync
    name: resilio-sync
    state: present
-  register: rslsync_yum
-  when:
-    - rslsync_get_url is success
-    - rslsync_rpm_key is success
-    - rslsync_yum_repository is success
 
-- name: Attempting to import resilio-sync tasks
-  tags: rslsync
+- name: Attempting to gather a list of system groups, if applicable
+  tags: resilio_sync
+  getent:
+    database: group
+    split: ':'
+  when: rslsync_groups|length > 0
+
+- name: Attempting to append rslsync user to groups, if applicable
+  tags: resilio_sync
   become: true
-  block:
-    - import_tasks: rslsync_groupmod.yml
-    - import_tasks: rslsync_directories.yml
-    - import_tasks: rslsync_configuration.yml
-    - import_tasks: rslsync_service.yml
-  when: rslsync_yum is success
+  user:
+    append: yes
+    groups: "{{ item }}"
+    name: rslsync
+  loop: "{{ rslsync_groups }}"
+  loop_control:
+    label: "{{ item }}"
+  when:
+    - item in getent_group
+    - rslsync_groups|length > 0
+
+- name: Attempting to create hidden sync directories, if applicable
+  tags: resilio_sync
+  become: true
+  file:
+    path: "{{ item.value.dir }}/.sync"
+    owner: rslsync
+    group: rslsync
+    mode: 0775
+    state: directory
+  loop: "{{ rslsync_shared_folders|dict2items|sort }}"
+  loop_control:
+    label: "{{ item.value.dir }}"
+  when:
+    - item.value.dir is defined
+    - rslsync_shared_folders|length > 0
+
+- name: Attempting to overlay resilio-sync configurations
+  tags: resilio_sync
+  become: true
+  template:
+    src: config.json.j2
+    dest: /etc/resilio-sync/config.json
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart resilio-sync
+
+- name: Ensure that resilio-sync is started and enabled on boot
+  service:
+    enabled: yes
+    name: resilio-sync
+    state: started
 ...
