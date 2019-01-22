@@ -36,26 +36,23 @@
    name: resilio-sync
    state: present
 
-- name: Attempting to gather a list of system groups, if applicable
+- name: Attempting to configure resilio-sync groups, if applicable.
   tags: resilio_sync
-  getent:
-    database: group
-    split: ':'
+  block:
+    - name: Attempting to gather a list of system groups
+      getent:
+        database: group
+        split: ':'
+    - name: Attempting to append rslsync user to groups
+      user:
+        append: yes
+        groups: "{{ item }}"
+        name: rslsync
+      loop: "{{ rslsync_groups }}"
+      loop_control:
+        label: "{{ item }}"
+      when: item in getent_group
   when: rslsync_groups|length > 0
-
-- name: Attempting to append rslsync user to groups, if applicable
-  tags: resilio_sync
-  become: true
-  user:
-    append: yes
-    groups: "{{ item }}"
-    name: rslsync
-  loop: "{{ rslsync_groups }}"
-  loop_control:
-    label: "{{ item }}"
-  when:
-    - item in getent_group
-    - rslsync_groups|length > 0
 
 - name: Attempting to create hidden sync directories, if applicable
   tags: resilio_sync
@@ -85,6 +82,8 @@
   notify: restart resilio-sync
 
 - name: Ensure that resilio-sync is started and enabled on boot
+  tags: resilio_sync
+  become: true
   service:
     enabled: yes
     name: resilio-sync
