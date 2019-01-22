@@ -1,6 +1,6 @@
 ---
 - name: Attempting to overlay resilio-sync yum repository
-  tags: resilio_sync
+  tags: rslsync
   become: true
   yum_repository:
     baseurl: 'http://linux-packages.resilio.com/resilio-sync/rpm/$basearch'
@@ -12,7 +12,7 @@
     state: present
 
 - name: Downloading the resilio-sync gpg key to store locally
-  tags: resilio_sync
+  tags: rslsync
   become: true
   get_url:
     dest: /etc/pki/rpm-gpg/RPM-GPG-KEY-resilio-sync
@@ -22,14 +22,14 @@
     url: 'https://linux-packages.resilio.com/resilio-sync/key.asc'
 
 - name: Ensure that the resilio-sync gpg key is installed
-  tags: resilio_sync
+  tags: rslsync
   become: true
   rpm_key:
     key: /etc/pki/rpm-gpg/RPM-GPG-KEY-resilio-sync
     state: present
 
 - name: Ensure that the resilio-sync package is installed
-  tags: resilio_sync
+  tags: rslsync
   become: true
   yum:
    enablerepo: resilio-sync
@@ -37,7 +37,7 @@
    state: present
 
 - name: Attempting to configure resilio-sync groups, if applicable.
-  tags: resilio_sync
+  tags: rslsync
   block:
     - name: Attempting to gather a list of system groups
       getent:
@@ -55,7 +55,7 @@
   when: rslsync_groups|length > 0
 
 - name: Attempting to create hidden sync directories, if applicable
-  tags: resilio_sync
+  tags: rslsync
   become: true
   file:
     path: "{{ item.value.dir }}/.sync"
@@ -71,7 +71,7 @@
     - rslsync_shared_folders|length > 0
 
 - name: Attempting to overlay resilio-sync configurations
-  tags: resilio_sync
+  tags: rslsync
   become: true
   template:
     src: config.json.j2
@@ -82,7 +82,7 @@
   notify: restart resilio-sync
 
 - name: Ensure that resilio-sync is started and enabled on boot
-  tags: resilio_sync
+  tags: rslsync
   become: true
   service:
     enabled: yes
