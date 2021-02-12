@@ -34,7 +34,6 @@ Available variables are listed below, along with default values.
     rslsync_folder_defaults_known_hosts: []
     rslsync_folder_defaults_use_relay: true
     rslsync_folder_defaults_use_tracker: true
-    rslsync_folder_defaults_use_lan_broadcast: true
     rslsync_folder_rescan_interval: 600
     rslsync_free_space_warning_threshold: 1024
     rslsync_groups: []
@@ -75,7 +74,6 @@ Available variables are listed below, along with default values.
     rslsync_tunnel_compress_delay_time: 10000
     rslsync_tunnel_compress_stream: false
     rslsync_upload_limit: 0
-    rslsync_use_advapi_crypto: false
     rslsync_use_only_bind_interface: false
     rslsync_use_upnp: true
     rslsync_webui:
@@ -113,7 +111,7 @@ None
               use_sync_trash: false
               use_tracker: false
           rslsync_webui: {}
-                  
+
 ### With Web UI
 
     - hosts: servers
